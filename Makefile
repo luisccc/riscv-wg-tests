@@ -35,7 +35,7 @@ endif
 TARGET := $(build_dir)/rv_wg_test
 c_srcs := main.c page_tables.c rv_wg_test.c test_register.c\
 			wg_csrs.c dcache_tests.c\
-			icache_tests.c tlb_tests.c\
+			icache_tests.c tlb_tests.c tinst_tests.c\
 	$(addprefix $(plat_dir)/, $(notdir $(wildcard $(plat_dir)/*.c)))
 asm_srcs := boot.S handlers.S  $(wildcard $(plat_dir)/*.S)
 ld_file:=linker.ld
