@@ -23,15 +23,23 @@
 	})
 
 
-bool wg_csrs() {
-    TEST_START();
-    
-    csr_write(CSR_MLWID, 1);
-    csr_write(CSR_MWIDDELEG, 7);
-	
-    goto_priv(PRIV_VS);
-    TEST_SETUP_EXCEPT();
-    csr_write(CSR_SLWID, 2);
+bool wg_csrs() {    
+	TEST_START();
 
-    TEST_END(); 
+    csr_write(CSR_MLWID, 1);
+    csr_write(CSR_MWIDDELEGH, 0xF000000);
+	csr_write(CSR_MWIDDELEGH3, 0xF000000);
+	
+	goto_priv(PRIV_HS);
+    TEST_SETUP_EXCEPT();
+    csr_write(CSR_HWIDDELEGH3, 0xF000000);
+    TEST_SETUP_EXCEPT();
+	csr_write(CSR_HWIDDELEGH, 0xF000000);
+
+	goto_priv(PRIV_M);
+	goto_priv(PRIV_HS);
+    goto_priv(PRIV_VS);
+    goto_priv(PRIV_VU);
+
+	TEST_END();
 }
