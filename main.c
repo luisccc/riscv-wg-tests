@@ -69,8 +69,12 @@ void main(){
 
     if(check_misa_h()){
         reset_state();
-        for(int i = 0; i < test_table_size; i++)
-            ret = ret && test_table[i]();
+        for(int i = 0; i < test_table_size; i++) {
+            bool result = test_table[i]();
+            ret = result && ret;
+        }
+    } else {
+        ret = false;
     }
 
     INFO("end");

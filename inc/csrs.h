@@ -33,6 +33,8 @@
 #define MSTATUS_TW   (1ULL << MSTATUS_TW_OFF)
 #define MSTATUS_GVA_OFF    (38)
 #define MSTATUS_GVA    (1ULL << MSTATUS_GVA_OFF)
+#define MSTATUS_MPV_OFF    (39)
+#define MSTATUS_MPV    (1ULL << MSTATUS_MPV_OFF)
 
 #define SATP_MODE_BARE (0ULL << SATP_MODE_OFF)
 #define SATP_MODE_32 (1ULL << SATP_MODE_OFF)
@@ -117,6 +119,7 @@
 #define CAUSE_IPF (12)
 #define CAUSE_LPF (13)
 #define CAUSE_SPF (15)
+#define CAUSE_SWC (18)
 #define CAUSE_IGPF (20)
 #define CAUSE_LGPF (21)
 #define CAUSE_VRTI (22)

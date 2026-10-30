@@ -2797,18 +2797,11 @@
 #define CSR_MHPMCOUNTER30H 0xb9e
 #define CSR_MHPMCOUNTER31H 0xb9f
 /* RISC-V WorldGuard */
+#define CSR_MWID            0x749
+#define CSR_MLWIDLIST       0x74A
 #define CSR_MLWID           0x390
 #define CSR_SLWID           0x190
 #define CSR_MWIDDELEG       0x748
-#define CSR_MWIDDELEGH      0x749
-#define CSR_MWIDDELEGH2     0x74A
-#define CSR_MWIDDELEGH3     0x74B
-
-#define CSR_HSLWID          0x622
-#define CSR_HWIDDELEG       0x623
-#define CSR_HWIDDELEGH      0x624
-#define CSR_HWIDDELEGH2     0x625
-#define CSR_HWIDDELEGH3     0x626
 
 #define CAUSE_MISALIGNED_FETCH 0x0
 #define CAUSE_FETCH_ACCESS 0x1
@@ -2831,6 +2824,7 @@
 #define CAUSE_STORE_GUEST_PAGE_FAULT 0x17
 #endif
 
+#ifndef __ASSEMBLER__
 #define DECLARE_INSN(NAME, MATCH, MASK) \
     static inline bool INS_MATCH_ ## NAME(uint32_t ins) { \
         return ((ins & MASK) == MATCH); \
@@ -4097,6 +4091,7 @@ DECLARE_INSN(CSRRWI, MATCH_CSRRWI, MASK_CSRRWI)
 DECLARE_INSN(CSRRSI, MATCH_CSRRSI, MASK_CSRRSI)
 DECLARE_INSN(CSRRCI, MATCH_CSRRCI, MASK_CSRRCI)
 #endif
+#endif /* !__ASSEMBLER__ */
 #ifdef DECLARE_CSR
 DECLARE_CSR(fflags, CSR_FFLAGS)
 DECLARE_CSR(frm, CSR_FRM)

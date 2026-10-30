@@ -39,7 +39,7 @@
 # define ERROR(str...)	{\
     printf(CRED "ERROR: " CDFLT str );\
     printf(" (%s, %d)\n", __func__, __LINE__);\
-    exit(0);\
+    exit(1);\
     while(1);\
 }
 #else

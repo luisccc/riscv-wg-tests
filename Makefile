@@ -27,17 +27,17 @@ prev_log_file:=$(build_dir)/prev_log.mk
 -include $(prev_log_file)
 LOG_LEVEL ?= LOG_INFO
 GENERIC_FLAGS += -D LOG_LEVEL=$(LOG_LEVEL)
+WG_DCACHE_FLUSH_ON_SWITCH ?= 0
+GENERIC_FLAGS += -DWG_DCACHE_FLUSH_ON_SWITCH=$(WG_DCACHE_FLUSH_ON_SWITCH)
 $(file > $(prev_log_file), PREV_LOG_LEVEL:=$(LOG_LEVEL))
 ifneq ($(PREV_LOG_LEVEL), $(LOG_LEVEL))
 pre_targets += clean_objs
 endif
 
 TARGET := $(build_dir)/rv_wg_test
-c_srcs := main.c page_tables.c rv_wg_test.c test_register.c\
-			wg_csrs.c dcache_tests.c\
-			icache_tests.c tlb_tests.c tinst_tests.c\
+c_srcs := main.c page_tables.c rv_wg_test.c test_register.c wg_cache_tests.c wg_icache_tests.c wg_world_tests.c\
 	$(addprefix $(plat_dir)/, $(notdir $(wildcard $(plat_dir)/*.c)))
-asm_srcs := boot.S handlers.S  $(wildcard $(plat_dir)/*.S)
+asm_srcs := boot.S handlers.S wg_cache_probes.S wg_icache_probes.S wg_world_probes.S $(wildcard $(plat_dir)/*.S)
 ld_file:=linker.ld
 inc_dirs := ./inc $(plat_dir)/inc
 inc_dirs := $(addprefix -I, $(inc_dirs))
@@ -80,6 +80,14 @@ $(TARGET).elf: $(objs) $(ld_file_final)
 
 $(build_dir)/%.o: %.[c,S] $(build_dir)/%.d
 	$(CC) $(CFLAGS) -c $< -o $@
+
+# This translation unit embeds the model's flush policy in its expected results.
+# Recompile it when make is invoked so changing the command-line policy cannot
+# silently reuse assertions from the other model configuration.
+.PHONY: wg_config_force
+$(build_dir)/wg_cache_tests.o: wg_config_force
+$(build_dir)/test_register.o: CFLAGS += -fno-toplevel-reorder
+$(objs): Makefile
 
 $(build_dir)/%.d: %.[c,S,ld] 
 	$(CC) $(GENERIC_FLAGS) -MM -MT "$(patsubst %.d, %.o, $@) $@" -MF $@ $<  
